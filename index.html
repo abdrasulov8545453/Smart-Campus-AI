@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Campus AI — система управления кампусом</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <form id="loginForm" class="login-card">
+    <div class="brand-mark">SC<span>AI</span></div>
+    <p class="eyebrow">ИНТЕЛЛЕКТУАЛЬНЫЙ КАМПУС</p>
+    <h1>Smart Campus AI</h1>
+    <p class="muted">Войдите в демонстрационную панель управления</p>
+    <label>Электронная почта<input id="loginEmail" type="email" placeholder="admin@campus.edu" required value="admin@campus.edu"></label>
+    <label>Пароль<input id="loginPassword" type="password" placeholder="Введите пароль" required value="campus123"></label>
+    <label>Роль пользователя<select id="loginRole"><option>Администратор</option><option>Инженер</option><option>Оператор</option></select></label>
+    <button class="btn primary full" type="submit">Войти в систему</button>
+    <p class="hint">Учебный прототип: вход имитируется в браузере. Данные демонстрационные.</p>
+  </form>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark small">SC<span>AI</span></div><div><b>Smart Campus</b><small>AI Control Center</small></div></div>
+    <div class="campus-label">УПРАВЛЕНИЕ КАМПУСОМ</div>
+    <nav id="mainNav">
+      <button class="nav-link active" data-page="dashboard"><span>▦</span> Обзор <kbd>01</kbd></button>
+      <button class="nav-link" data-page="rooms"><span>▤</span> Аудитории <kbd>02</kbd></button>
+      <button class="nav-link" data-page="devices"><span>◉</span> IoT-устройства <kbd>03</kbd></button>
+      <button class="nav-link" data-page="incidents"><span>⚑</span> Заявки и инциденты <kbd>04</kbd><i id="incidentBadge">0</i></button>
+      <button class="nav-link" data-page="analytics"><span>⌁</span> AI-аналитика <kbd>05</kbd></button>
+      <button class="nav-link" data-page="notifications"><span>♧</span> Уведомления <kbd>06</kbd></button>
+      <button class="nav-link" data-page="settings"><span>⚙</span> Настройки <kbd>07</kbd></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="system-status"><span class="pulse"></span><div><b>Система активна</b><small>Последнее обновление: сейчас</small></div></div>
+      <button id="logoutBtn" class="logout">↪ Выйти из аккаунта</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Открыть меню">☰</button>
+      <div class="crumb"><span>Smart Campus</span><b>/</b><strong id="pageCrumb">Обзор</strong></div>
+      <div class="top-actions">
+        <div class="search-wrap"><span>⌕</span><input id="globalSearch" placeholder="Поиск по кампусу..." aria-label="Поиск по кампусу"></div>
+        <button class="icon-btn" id="themeToggle" title="Переключить тему">☼</button>
+        <button class="icon-btn notification-button" id="openNotifications" title="Уведомления">♧<i id="notificationDot"></i></button>
+        <div class="profile"><div class="avatar">SC</div><div><b id="profileName">Администратор</b><small id="profileEmail">admin@campus.edu</small></div></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="page active" id="page-dashboard">
+        <div class="page-heading"><div><p class="eyebrow">ПОНЕДЕЛЬНИК · МОНИТОРИНГ В РЕАЛЬНОМ ВРЕМЕНИ</p><h1>Панель управления</h1><p class="muted">Состояние инфраструктуры кампуса и ключевые показатели за сегодня.</p></div><button class="btn outline" id="refreshData">↻ Обновить данные</button></div>
+        <div class="welcome-banner"><div><span class="banner-tag">SMART CAMPUS INTELLIGENCE</span><h2>Кампус под контролем.</h2><p>Данные датчиков, энергопотребление и события собраны в одном рабочем пространстве.</p></div><div class="banner-orbit"><div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit-core">AI</div><span class="orbit-dot d1"></span><span class="orbit-dot d2"></span><span class="orbit-dot d3"></span></div></div>
+        <div class="kpi-grid">
+          <article class="kpi-card"><div class="kpi-top"><span>Всего помещений</span><span class="kpi-icon blue">▤</span></div><div class="kpi-value" id="kpiRooms">12</div><div class="kpi-foot"><span class="positive">●</span> Подключены к мониторингу</div></article>
+          <article class="kpi-card"><div class="kpi-top"><span>Устройства онлайн</span><span class="kpi-icon green">◉</span></div><div class="kpi-value"><span id="kpiOnline">18</span><small id="kpiDeviceTotal">/20</small></div><div class="kpi-foot"><span class="positive">↑ Стабильно</span> <span id="onlinePercent">90%</span></div></article>
+          <article class="kpi-card"><div class="kpi-top"><span>Открытые инциденты</span><span class="kpi-icon orange">⚑</span></div><div class="kpi-value" id="kpiIncidents">3</div><div class="kpi-foot"><span class="warning-text">Требуют внимания</span></div></article>
+          <article class="kpi-card"><div class="kpi-top"><span>Энергия за день</span><span class="kpi-icon violet">ϟ</span></div><div class="kpi-value"><span id="kpiEnergy">412</span><small>кВт·ч</small></div><div class="kpi-foot"><span class="positive">↓ 4,8%</span> к предыдущему дню</div></article>
+        </div>
+        <div class="section-title-row"><div><h2>Аналитика кампуса</h2><p class="muted">Основные показатели инфраструктуры</p></div><span class="live-label"><i></i> ДАННЫЕ ОБНОВЛЕНЫ</span></div>
+        <div class="charts-grid">
+          <article class="panel chart-panel wide"><div class="panel-head"><div><h3>Энергопотребление</h3><p class="muted">кВт·ч по корпусам</p></div><span class="select-static">Сегодня ▾</span></div><div class="chart-box"><canvas id="energyChart"></canvas></div></article>
+          <article class="panel chart-panel"><div class="panel-head"><div><h3>Состояние устройств</h3><p class="muted">Распределение подключений</p></div></div><div class="chart-box doughnut-box"><canvas id="deviceChart"></canvas></div><div class="chart-legend"><span><i class="legend-dot green-dot"></i> Онлайн <b id="legendOnline">18</b></span><span><i class="legend-dot gray-dot"></i> Офлайн <b id="legendOffline">2</b></span></div></article>
+          <article class="panel chart-panel wide"><div class="panel-head"><div><h3>Температура в помещениях</h3><p class="muted">Последние измерения, °C</p></div><span class="tag-soft">Датчики температуры</span></div><div class="chart-box"><canvas id="temperatureChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Последние инциденты</h3><button class="text-btn" data-goto="incidents">Все заявки →</button></div></div><div id="recentIncidents" class="compact-list"></div></article>
+        </div>
+        <div class="section-title-row"><div><h2>Состояние помещений</h2><p class="muted">Быстрый обзор аудиторий и лабораторий</p></div><button class="text-btn" data-goto="rooms">Все помещения →</button></div>
+        <div id="roomOverview" class="room-cards"></div>
+      </section>
+
+      <section class="page" id="page-rooms">
+        <div class="page-heading"><div><p class="eyebrow">ИНФРАСТРУКТУРА</p><h1>Аудитории и помещения</h1><p class="muted">Мониторинг температуры, CO₂, занятости и энергопотребления.</p></div><button class="btn primary" id="simulateRooms">↻ Обновить показания</button></div>
+        <div class="filter-row"><div class="search-wrap table-search"><span>⌕</span><input id="roomSearch" placeholder="Поиск по ID, типу или корпусу..."></div><select id="roomStatusFilter"><option value="">Все статусы</option><option value="normal">Норма</option><option value="warning">Предупреждение</option><option value="critical">Критический</option></select><select id="buildingFilter"><option value="">Все корпуса</option><option>Корпус A</option><option>Корпус B</option><option>Корпус C</option></select></div>
+        <div class="table-wrap panel"><table><thead><tr><th>Помещение</th><th>Корпус / этаж</th><th>Тип</th><th>Температура</th><th>CO₂</th><th>Занятость</th><th>Энергия</th><th>Статус</th></tr></thead><tbody id="roomsTable"></tbody></table><div id="roomsEmpty" class="empty hidden">По заданным фильтрам помещений не найдено.</div></div>
+      </section>
+
+      <section class="page" id="page-devices">
+        <div class="page-heading"><div><p class="eyebrow">ИНТЕРНЕТ ВЕЩЕЙ · IOT</p><h1>IoT-устройства</h1><p class="muted">Состояние сенсоров и оборудования, подключённого к системе.</p></div><button class="btn primary" id="addDeviceBtn">＋ Добавить устройство</button></div>
+        <div class="kpi-grid compact-kpis"><article class="kpi-card"><div class="kpi-top"><span>Всего устройств</span><span class="kpi-icon blue">◉</span></div><div class="kpi-value" id="deviceTotalCard">20</div></article><article class="kpi-card"><div class="kpi-top"><span>Онлайн</span><span class="kpi-icon green">✓</span></div><div class="kpi-value" id="deviceOnlineCard">18</div></article><article class="kpi-card"><div class="kpi-top"><span>Офлайн</span><span class="kpi-icon orange">!</span></div><div class="kpi-value" id="deviceOfflineCard">2</div></article></div>
+        <div class="filter-row"><div class="search-wrap table-search"><span>⌕</span><input id="deviceSearch" placeholder="Поиск по ID, типу или аудитории..."></div><select id="deviceStatusFilter"><option value="">Все состояния</option><option value="online">Онлайн</option><option value="offline">Офлайн</option></select><select id="deviceTypeFilter"><option value="">Все типы</option><option>Температура</option><option>CO₂</option><option>Освещение</option><option>Энергия</option><option>Доступ</option></select></div>
+        <div class="table-wrap panel"><table><thead><tr><th>ID устройства</th><th>Помещение</th><th>Тип</th><th>Показание</th><th>Состояние</th><th>Обновлено</th><th>Действие</th></tr></thead><tbody id="devicesTable"></tbody></table><div id="devicesEmpty" class="empty hidden">Устройства не найдены.</div></div>
+      </section>
+
+      <section class="page" id="page-incidents">
+        <div class="page-heading"><div><p class="eyebrow">СЕРВИС И БЕЗОПАСНОСТЬ</p><h1>Заявки и инциденты</h1><p class="muted">Создавайте заявки, назначайте ответственных и отслеживайте выполнение.</p></div><button class="btn primary" id="newIncidentBtn">＋ Новая заявка</button></div>
+        <div class="kpi-grid compact-kpis"><article class="kpi-card"><div class="kpi-top"><span>Всего заявок</span><span class="kpi-icon blue">▤</span></div><div class="kpi-value" id="allIncidentCount">4</div></article><article class="kpi-card"><div class="kpi-top"><span>Открытые</span><span class="kpi-icon orange">⚑</span></div><div class="kpi-value" id="openIncidentCount">3</div></article><article class="kpi-card"><div class="kpi-top"><span>В работе</span><span class="kpi-icon violet">↻</span></div><div class="kpi-value" id="progressIncidentCount">1</div></article><article class="kpi-card"><div class="kpi-top"><span>Решено</span><span class="kpi-icon green">✓</span></div><div class="kpi-value" id="resolvedIncidentCount">1</div></article></div>
+        <div class="filter-row"><div class="search-wrap table-search"><span>⌕</span><input id="incidentSearch" placeholder="Поиск по заявкам..."></div><select id="incidentStatusFilter"><option value="">Все статусы</option><option value="Открыта">Открыта</option><option value="В работе">В работе</option><option value="Решена">Решена</option></select><select id="incidentPriorityFilter"><option value="">Все приоритеты</option><option value="Критический">Критический</option><option value="Высокий">Высокий</option><option value="Средний">Средний</option><option value="Низкий">Низкий</option></select></div>
+        <div class="table-wrap panel"><table><thead><tr><th>Заявка</th><th>Помещение</th><th>Приоритет</th><th>Ответственный</th><th>Статус</th><th>Создана</th><th>Действия</th></tr></thead><tbody id="incidentsTable"></tbody></table><div id="incidentsEmpty" class="empty hidden">Заявок не найдено.</div></div>
+      </section>
+
+      <section class="page" id="page-analytics">
+        <div class="page-heading"><div><p class="eyebrow">AI ANALYTICS ENGINE</p><h1>Интеллектуальная аналитика</h1><p class="muted">Обнаружение отклонений по порогам и статистическому методу Z-score.</p></div><button class="btn primary" id="runAnalysis">✦ Запустить анализ</button></div>
+        <div class="ai-banner"><div class="ai-symbol">✦</div><div><span class="banner-tag">АНАЛИТИЧЕСКИЙ МОДУЛЬ</span><h2>Система ищет отклонения в данных</h2><p>Проверяются температура, уровень CO₂ и энергопотребление. Результаты являются учебной симуляцией, а не медицинскими или инженерными заключениями.</p></div><div class="ai-status"><span class="pulse"></span> Готов к анализу</div></div>
+        <div class="kpi-grid compact-kpis"><article class="kpi-card"><div class="kpi-top"><span>Найдено аномалий</span><span class="kpi-icon orange">⚠</span></div><div class="kpi-value" id="anomalyCount">0</div></article><article class="kpi-card"><div class="kpi-top"><span>Критические</span><span class="kpi-icon red">!</span></div><div class="kpi-value" id="criticalCount">0</div></article><article class="kpi-card"><div class="kpi-top"><span>Рекомендации</span><span class="kpi-icon green">✦</span></div><div class="kpi-value" id="recommendationCount">0</div></article></div>
+        <div class="panel"><div class="panel-head"><div><h3>Обнаруженные аномалии и рекомендации</h3><p class="muted">Пороговые значения: температура ≥ 32 °C, CO₂ ≥ 1500 ppm.</p></div><span class="tag-soft">Rule-based + Z-score</span></div><div id="anomalyList" class="anomaly-list"></div></div>
+        <div class="panel thresholds"><h3>Правила обнаружения</h3><div class="threshold-grid"><div><span>Температура</span><b>18–27 °C — норма</b><small>28–31 °C — предупреждение · ≥32 °C — критический уровень</small></div><div><span>CO₂</span><b>&lt; 1000 ppm — норма</b><small>1000–1499 ppm — предупреждение · ≥1500 ppm — критический уровень</small></div><div><span>Энергопотребление</span><b>Базовая линия</b><small>+30% — предупреждение · +60% — критический уровень</small></div><div><span>Z-score</span><b>Отклонение от среднего</b><small>Значение выше 2 рассматривается как статистическая аномалия.</small></div></div></div>
+      </section>
+
+      <section class="page" id="page-notifications">
+        <div class="page-heading"><div><p class="eyebrow">ЦЕНТР СОБЫТИЙ</p><h1>Уведомления</h1><p class="muted">Предупреждения системы о состоянии датчиков и инфраструктуры.</p></div><button class="btn outline" id="markRead">✓ Отметить все прочитанными</button></div>
+        <div class="panel"><div id="notificationsList" class="notifications-list"></div></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-heading"><div><p class="eyebrow">ПАРАМЕТРЫ ПЛАТФОРМЫ</p><h1>Настройки</h1><p class="muted">Персонализация интерфейса и управление демонстрационными данными.</p></div></div>
+        <div class="settings-grid"><div class="panel settings-card"><div class="settings-icon">◐</div><h3>Внешний вид</h3><p class="muted">Выберите тему интерфейса. Настройка сохраняется в браузере.</p><div class="setting-row"><div><b>Светлая тема</b><small>Переключить оформление интерфейса</small></div><label class="switch"><input id="lightThemeSetting" type="checkbox"><span></span></label></div></div>
+        <div class="panel settings-card"><div class="settings-icon">🏫</div><h3>Параметры кампуса</h3><p class="muted">Информация об учебном заведении.</p><label>Название кампуса<input id="campusName" value="Главный учебный кампус"></label><label>Часовой пояс<select id="campusTimezone"><option>Asia/Bishkek (UTC+6)</option><option>Europe/Moscow (UTC+3)</option><option>UTC</option></select></label><button class="btn primary" id="saveSettings">Сохранить параметры</button></div>
+        <div class="panel settings-card danger-card"><div class="settings-icon">↻</div><h3>Демонстрационные данные</h3><p class="muted">Вернуть помещения, устройства и заявки к исходному состоянию.</p><button class="btn danger" id="resetData">Сбросить тестовые данные</button><p class="hint">Сброс удаляет локальные изменения этого учебного прототипа.</p></div>
+        <div class="panel settings-card"><div class="settings-icon">ⓘ</div><h3>О системе</h3><p class="muted">Smart Campus AI — учебная веб-платформа для мониторинга инфраструктуры образовательного учреждения.</p><div class="about-row"><span>Версия</span><b>1.0.0</b></div><div class="about-row"><span>Технологии</span><b>HTML · CSS · JavaScript</b></div><div class="about-row"><span>Хранение</span><b>localStorage</b></div></div></div>
+      </section>
+      <footer class="footer"><span>© 2026 Smart Campus AI</span><span><i class="pulse"></i> Все системы работают в демонстрационном режиме</span></footer>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><p class="eyebrow">УПРАВЛЕНИЕ ДАННЫМИ</p><h2 id="modalTitle">Новая заявка</h2></div><button class="icon-btn" id="closeModal" aria-label="Закрыть">×</button></div><form id="incidentForm"><input type="hidden" id="editIncidentId"><label>Название заявки<input id="incidentTitle" required placeholder="Например, неисправность датчика"></label><div class="form-grid"><label>Помещение<select id="incidentRoom"></select></label><label>Приоритет<select id="incidentPriority"><option>Средний</option><option>Низкий</option><option>Высокий</option><option>Критический</option></select></label></div><div class="form-grid"><label>Ответственный<select id="incidentAssignee"><option>Инженер</option><option>Администратор</option><option>Оператор</option><option>Служба эксплуатации</option></select></label><label>Статус<select id="incidentStatus"><option>Открыта</option><option>В работе</option><option>Решена</option></select></label></div><label>Комментарий<textarea id="incidentComment" rows="3" placeholder="Дополнительная информация..."></textarea></label><div class="modal-actions"><button type="button" class="btn outline" id="cancelModal">Отмена</button><button type="submit" class="btn primary">Сохранить заявку</button></div></form></div></div>
+<div id="toast" class="toast"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
